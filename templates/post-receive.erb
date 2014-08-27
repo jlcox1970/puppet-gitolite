@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# An example hook script that is called after a successful
+# commit is made.
+#
+# To enable this hook, rename this file to "post-commit".
+./hooks/post-receive-commitnumbers
+
+chmod 775 ~git/repositories/ -R
+chmod 700 ~git/repositories/gitolite-admin.git -R
+: Nothing

@@ -1,0 +1,41 @@
+gitolite
+------
+
+ Installs a gitolite git repository service
+
+Parameters
+----------
+ 
+[git_key]
+   administrators public ssh key for setting up the system
+
+[admin_user]
+   name for the above key
+
+[git_key_type]
+   The type of key for the administrator (defaults to ssh-rsa)
+
+[git_home]
+   root directory for the repository.
+     Defaults to the git users home direcotry (/home/git)
+
+[auto_tag_serial]
+   Adds an auto incrimental serial tag to each commit
+
+Examples
+--------
+
+class { gitolite:
+  git_key => 'some key val',
+}
+
+Authors
+-------
+
+Jason Cox <j_cox@bigpond.com>
+
+Copyright
+---------
+
+Copyright 2014 Jason Cox, unless otherwise noted.
+

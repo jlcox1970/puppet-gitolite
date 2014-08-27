@@ -1,0 +1,38 @@
+{
+  "author": "jlcox1970",
+  "dependencies": [
+  	{
+      "name": "stahnma/epel",
+      "version_requirement": ">= 0.0.6"
+    }
+  ],
+  "license": "Apache License, Version 2.0",
+  "name": "jlcox-gitolite",
+  "operatingsystem_support": [
+  	{
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+        "operatingsystemrelease": [
+          "5",
+          "6",
+          "7"
+        ]
+    }
+  ],
+  "project_page": "",
+  "requirements": [
+  	{ "name": "pe", "version_requirement": "3.2.x" },
+    { "name": "puppet", "version_requirement": "3.x" }
+  ],
+  "source": "",
+  "summary": "Installer for gitolite on Centos and RHEL",
+  "tags": ["git"],
+  "version": "0.1.0"
+}

@@ -1,0 +1,10 @@
+#!/bin/bash
+export HOME=<%= @git_home %>
+chmod +rx /home
+chmod +rx <%= @git_home %>
+
+gl-setup <%= @git_home %>/install.pub -q -q
+
+chmod +rx <%= @git_home %>/repositories -R
+chmod 700 <%= @git_home %>/repositories/gitolite-admin.git -R
+
