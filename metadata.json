@@ -26,13 +26,13 @@
         ]
     }
   ],
-  "project_page": "",
+  "project_page": "https://github.com/jlcox1970/gitolite",
   "requirements": [
-  	{ "name": "pe", "version_requirement": "3.2.x" },
+  	{ "name": "pe", "version_requirement": ">3.2.x" },
     { "name": "puppet", "version_requirement": "3.x" }
   ],
-  "source": "",
+  "source": "https://github.com/jlcox1970/gitolite.git",
   "summary": "Installer for gitolite on Centos and RHEL",
   "tags": ["git"],
-  "version": "0.1.0"
+  "version": "0.1.1"
 }
