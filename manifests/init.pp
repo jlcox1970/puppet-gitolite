@@ -41,12 +41,12 @@ class gitolite (
   $git_home        = '/home/git',
   $auto_tag_serial = false,
 ){
- 
+
   $git_root = "${git_home}/repositories"
   $hook     = "${git_home}/.gitolite/hooks/common"
- 
+
   if ( $git_key == undef){
-    fail("missing administrators key for gitolite")
+    fail('missing administrators key for gitolite')
   }
   if ( $auto_tag_serial == true ){
     @file {'hook post-receive-commitnumbers':
@@ -56,12 +56,12 @@ class gitolite (
     }
   } else {
     @file {'remove hook post-receive-commitnumbers':
-      name   => "${hook}/post-receive-commitnumbers",
       ensure => absent,
+      name   => "${hook}/post-receive-commitnumbers",
       tag    => 'auto_tag_serial'
     }
   }
- 
+
   include epel
 
   Package{
@@ -71,13 +71,13 @@ class gitolite (
     mode    => '0700',
     owner   => 'git',
     group   => 'git',
-  } 
- 
+  }
+
   package {'gitolite' : } ->
   package {'gitolite3' : } ->
   user { 'git' :
-    comment    => 'git user',
     ensure     => present,
+    comment    => 'git user',
     managehome => true,
     home       => $git_home,
   } ->
@@ -90,13 +90,13 @@ class gitolite (
     name    => "${git_home}/setup.sh",
     content => template("${module_name}/setup.sh.erb"),
   } ->
-  exec {'install gitolite': 
+  exec {'install gitolite':
     cwd     => $git_home,
     path    => '/usr/bin:/bin',
     command => "${git_home}/setup.sh",
     user    => 'git',
     creates => "${git_home}/.gitolite"
-  } -> 
+  } ->
   file {'hook functions':
     name    => "${hook}/functions",
     content => template("${module_name}/functions.erb"),
