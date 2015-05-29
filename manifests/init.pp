@@ -73,7 +73,7 @@ class gitolite (
     group   => 'git',
   }
 
-    case $operatingsystemmajrelease {
+  case $::operatingsystemmajrelease {
     7 : {
     }
     default : {
