@@ -73,7 +73,13 @@ class gitolite (
     group   => 'git',
   }
 
-  package {'gitolite' : } ->
+    case $operatingsystemmajrelease {
+    7 : {
+    }
+    default : {
+      package {'gitolite' : }
+    }
+  }
   package {'gitolite3' : } ->
   user { 'git' :
     ensure     => present,
