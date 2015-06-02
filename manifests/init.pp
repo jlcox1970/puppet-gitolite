@@ -52,6 +52,11 @@ class gitolite (
   $git_root = "${git_home}/repositories"
   $hook     = "${git_home}/.gitolite/hooks/common"
 
+  concat { "${hook}/post-receive" :
+    ensure => present,
+  }
+
+
   if ( $git_key == undef){
     fail('missing administrators key for gitolite')
   }
@@ -62,7 +67,7 @@ class gitolite (
       tag    => 'auto_tag_serial'
     }
     @concat::fragment { 'auto_tag_serial' :
-      content => './hooks/post-receive-commitnumbers',
+      content => "./hooks/post-receive-commitnumbers\n",
       target  => "${hook}/post-receive",
       order   => '02',
       tag     => 'post-receive',
@@ -81,7 +86,7 @@ class gitolite (
       tag    => 'r10k_env.sh',
     }
     @concat::fragment { 'r10k_env.sh':
-      content => './hooks/r10k_env.sh',
+      content => "./hooks/r10k_env.sh\n",
       target  => "${hook}/post-receive",
       order   => '03',
       tag     => 'post-receive',
@@ -140,12 +145,22 @@ class gitolite (
     name    => "${hook}/functions",
     content => template("${module_name}/functions.erb"),
   } ->
-  concat { "${hook}/post-receive" :
-    ensure => present,
-  }->
+  File <| tag == 'auto_tag_serial' |>  ->
+  File <| tag == 'r10k_env.sh' |> ->
+
+  concat::fragment { 'post-recceive header':
+	target => "${hook}/post-receive",
+	content => "#!/bin/bash\n#\n",
+	order => '01',
+	tag => 'post-receive'
+  }
   
-  File <| tag == 'post-receive' |> ->
-  File <| tag == 'auto_tag_serial' |> ->
-  File <| tag == 'r10k_env.sh' |>
+  Concat::Fragment <| tag == 'post-receive' |> 
+  concat::fragment { 'post-recceive footer':
+	target => "${hook}/post-receive",
+	content => ": Nothing\n",
+	order => '999',
+	tag => 'post-receive'
+  }
 
 }
