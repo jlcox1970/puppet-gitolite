@@ -144,10 +144,6 @@ class gitolite (
     ensure => present,
   }->
   
-  file {'hook post-receive':
-    name    => "${hook}/post-receive",
-    content => template("${module_name}/post-receive.erb"),
-  } ->
   File <| tag == 'post-receive' |> ->
   File <| tag == 'auto_tag_serial' |> ->
   File <| tag == 'r10k_env.sh' |>
