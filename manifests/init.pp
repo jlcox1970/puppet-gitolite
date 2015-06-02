@@ -20,6 +20,12 @@
 # [auto_tag_serial]
 #   Adds an auto incrimental serial tag to each commit
 #
+# [r10k_update]
+#   Run r10k after git commit to deploy both environments and modules
+#   This determins what needs to be done and runs either
+#   deploy module or deploy environment
+#   It will run both a Puppetfile is changed
+#
 # === Examples
 #
 #  class { gitolite:
