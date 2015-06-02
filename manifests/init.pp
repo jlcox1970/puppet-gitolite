@@ -40,6 +40,7 @@ class gitolite (
   $git_key_type    = 'ssh-rsa',
   $git_home        = '/home/git',
   $auto_tag_serial = false,
+  $r10k_update     = false,
 ){
 
   $git_root = "${git_home}/repositories"
@@ -61,6 +62,20 @@ class gitolite (
       tag    => 'auto_tag_serial'
     }
   }
+  if  ( $r10k_update == true ){
+    @file {'r10k_env.sh' :
+      name   => "${hook}/r10k_env.sh",
+      source => "puppet///modules/${module_name}/r10k_env.sh",
+      tag    => 'r10k_env.sh',
+    }
+  } else {
+    @file {'r10k_env.sh' :
+      ensure => absent,
+      name   => "${hook}/r10k_env.sh",
+      tag    => 'r10k_env.sh',
+    }
+  }
+    
 
   include epel
 
@@ -111,6 +126,7 @@ class gitolite (
     name    => "${hook}/post-receive",
     content => template("${module_name}/post-receive.erb"),
   } ->
-  File <| tag == 'auto_tag_serial' |>
+  File <| tag == 'auto_tag_serial' |> ->
+  File <| tag == 'r10k_env.sh' |>
 
 }
