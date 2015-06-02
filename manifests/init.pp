@@ -61,6 +61,12 @@ class gitolite (
       source => "puppet:///modules/${module_name}/post-receive-commitnumbers",
       tag    => 'auto_tag_serial'
     }
+    @concat::fragment { 'auto_tag_serial' :
+      content => './hooks/post-receive-commitnumbers',
+      target  => "${hook}/post-receive",
+      order   => '02',
+      tag     => 'post-receive',
+    }
   } else {
     @file {'remove hook post-receive-commitnumbers':
       ensure => absent,
@@ -73,6 +79,12 @@ class gitolite (
       name   => "${hook}/r10k_env.sh",
       source => "puppet:///modules/${module_name}/r10k_env.sh",
       tag    => 'r10k_env.sh',
+    }
+    @concat::fragment { 'r10k_env.sh':
+      content => './hooks/r10k_env.sh',
+      target  => "${hook}/post-receive",
+      order   => '03',
+      tag     => 'post-receive',
     }
   } else {
     @file {'r10k_env.sh' :
@@ -128,10 +140,15 @@ class gitolite (
     name    => "${hook}/functions",
     content => template("${module_name}/functions.erb"),
   } ->
+  concat { "${hook}/post-receive" :
+    ensure => present,
+  }->
+  
   file {'hook post-receive':
     name    => "${hook}/post-receive",
     content => template("${module_name}/post-receive.erb"),
   } ->
+  File <| tag == 'post-receive' |> ->
   File <| tag == 'auto_tag_serial' |> ->
   File <| tag == 'r10k_env.sh' |>
 
