@@ -71,7 +71,7 @@ class gitolite (
   if  ( $r10k_update == true ){
     @file {'r10k_env.sh' :
       name   => "${hook}/r10k_env.sh",
-      source => "puppet///modules/${module_name}/r10k_env.sh",
+      source => "puppet:///modules/${module_name}/r10k_env.sh",
       tag    => 'r10k_env.sh',
     }
   } else {
