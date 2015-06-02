@@ -51,7 +51,7 @@ class gitolite (
   if ( $auto_tag_serial == true ){
     @file {'hook post-receive-commitnumbers':
       name   => "${hook}/post-receive-commitnumbers",
-      source => "puppet:///modules/${module_name}/post-receive-commitnumbers"),
+      source => "puppet:///modules/${module_name}/post-receive-commitnumbers",
       tag    => 'auto_tag_serial'
     }
   } else {
