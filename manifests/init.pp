@@ -26,6 +26,10 @@
 #   deploy module or deploy environment
 #   It will run both a Puppetfile is changed
 #
+# [extra_hooks]
+#   Array of extra hooks required to be added
+#   These are not deployed via the module
+#
 # === Examples
 #
 #  class { gitolite:
@@ -47,6 +51,7 @@ class gitolite (
   $git_home        = '/home/git',
   $auto_tag_serial = false,
   $r10k_update     = false,
+  $extra_hooks     = undef,
 ){
 
   $git_root = "${git_home}/repositories"
@@ -150,15 +155,17 @@ class gitolite (
 
   concat::fragment { 'post-recceive header':
 	target => "${hook}/post-receive",
-	content => "#!/bin/bash\n#\n",
+	content => "#!/bin/bash\n#\n. \$(dirname \$0)/functions\n\nwhile read oldrev newrev refname\ndo\n",
 	order => '01',
 	tag => 'post-receive'
   }
-  
+  if ( $extra_hooks != undef) {
+    gitolite::hooks { $extra_hooks :}
+  }
   Concat::Fragment <| tag == 'post-receive' |> 
   concat::fragment { 'post-recceive footer':
 	target => "${hook}/post-receive",
-	content => ": Nothing\n",
+	content => "done\n: Nothing\n",
 	order => '999',
 	tag => 'post-receive'
   }
