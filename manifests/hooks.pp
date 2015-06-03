@@ -1,11 +1,11 @@
 define gitolite::hooks (
-  $hook_file  = $::name,
+  $hook_file  = $name,
   $hook ,
 ){
-  @concat::fragment { $hook :
-      content => "\techo \$oldrev \$newrev \$refname | ${hook_file}",
-      target  => "${hook}/post-recieve",
+  @concat::fragment { "Gitolite hook ${hook_file} is being added" :
+      content => "\techo \$oldrev \$newrev \$refname | ${hook_file}\n",
+      target  => "${hook}",
       order   => '03',
-      tag     => 'post-recieve',
+      tag     => 'post-receive',
   }
 }

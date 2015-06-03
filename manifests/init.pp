@@ -52,11 +52,12 @@ class gitolite (
   $git_home        = '/home/git',
   $auto_tag_serial = false,
   $r10k_update     = false,
-  $extra_hooks     = undef,
+  $extra_hooks 	   = undef,
 ){
 
-  $git_root = "${git_home}/repositories"
-  $hook     = "${git_home}/.gitolite/hooks/common"
+  $git_root    = "${git_home}/repositories"
+  $hook        = "${git_home}/.gitolite/hooks/common"
+  $hook_concat = "${hook}/post-receive"
 
   concat { "${hook}/post-receive" :
     ensure => present,
@@ -74,8 +75,8 @@ class gitolite (
       tag    => 'auto_tag_serial'
     }
     @concat::fragment { 'auto_tag_serial' :
-      content => "./hooks/post-receive-commitnumbers\n",
-      target  => "\techo \$oldrev \$newrev \$refname | ${hook}/post-receive",
+      content => "\techo \$oldrev \$newrev \$refname | ./hooks/post-receive-commitnumbers\n",
+      target  => "${hook_concat}",
       order   => '02',
       tag     => 'post-receive',
     }
@@ -94,7 +95,7 @@ class gitolite (
     }
     @concat::fragment { 'r10k_env.sh':
       content => "\techo \$oldrev \$newrev \$refname | ./hooks/r10k_env.sh\n",
-      target  => "${hook}/post-receive",
+      target  => "${hook_concat}",
       order   => '03',
       tag     => 'post-receive',
     }
@@ -156,19 +157,19 @@ class gitolite (
   File <| tag == 'r10k_env.sh' |> ->
 
   concat::fragment { 'post-recceive header':
-	target => "${hook}/post-receive",
+	target => "${hook_concat}",
 	content => "#!/bin/bash\n#\n. \$(dirname \$0)/functions\n\nwhile read oldrev newrev refname\ndo\n",
 	order => '01',
 	tag => 'post-receive'
   }
-  if ( $extra_hooks != undef) {
+  if ( $extra_hooks != undef ){
     gitolite::hooks { $extra_hooks :
-      hook=> $hook,
+      hook=> $hook_concat,
     }
   }
   Concat::Fragment <| tag == 'post-receive' |> 
   concat::fragment { 'post-recceive footer':
-	target => "${hook}/post-receive",
+	target => "${hook_concat}",
 	content => "done\n: Nothing\n",
 	order => '999',
 	tag => 'post-receive'
