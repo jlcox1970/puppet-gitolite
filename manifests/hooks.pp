@@ -8,5 +8,5 @@ define gitolite::hooks (
       target  => "${target_name}",
       order   => '03',
       tag     => "${tag}",
-  
+  }
 }
