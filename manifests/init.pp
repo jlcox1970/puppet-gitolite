@@ -162,7 +162,9 @@ class gitolite (
 	tag => 'post-receive'
   }
   if ( $extra_hooks != undef) {
-    gitolite::hooks { $extra_hooks :}
+    gitolite::hooks { $extra_hooks :
+      tag => 'post-receive'
+    }
   }
   Concat::Fragment <| tag == 'post-receive' |> 
   concat::fragment { 'post-recceive footer':
