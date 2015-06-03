@@ -4,7 +4,7 @@ define gitolite::hooks (
   $tag    = $::tag_name
 ){
   @concat::fragment { $hook :
-      content => "${hook}",
+      content => "\techo \$oldrev \$newrev \$refname | ${hook}",
       target  => "${target_name}",
       order   => '03',
       tag     => "${tag}",

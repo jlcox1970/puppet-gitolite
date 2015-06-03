@@ -29,6 +29,7 @@
 # [extra_hooks]
 #   Array of extra hooks required to be added
 #   These are not deployed via the module
+#   NOTE: Use full path for hooks
 #
 # === Examples
 #
@@ -73,7 +74,7 @@ class gitolite (
     }
     @concat::fragment { 'auto_tag_serial' :
       content => "./hooks/post-receive-commitnumbers\n",
-      target  => "echo \$oldrev \$newrev \$refname | ${hook}/post-receive",
+      target  => "\techo \$oldrev \$newrev \$refname | ${hook}/post-receive",
       order   => '02',
       tag     => 'post-receive',
     }
@@ -91,7 +92,7 @@ class gitolite (
       tag    => 'r10k_env.sh',
     }
     @concat::fragment { 'r10k_env.sh':
-      content => "echo \$oldrev \$newrev \$refname | ./hooks/r10k_env.sh\n",
+      content => "\techo \$oldrev \$newrev \$refname | ./hooks/r10k_env.sh\n",
       target  => "${hook}/post-receive",
       order   => '03',
       tag     => 'post-receive',
