@@ -60,6 +60,7 @@ class gitolite (
 
   concat { "${hook}/post-receive" :
     ensure => present,
+    mode   => '0755',
   }
 
 
