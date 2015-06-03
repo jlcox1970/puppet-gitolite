@@ -73,7 +73,7 @@ class gitolite (
     }
     @concat::fragment { 'auto_tag_serial' :
       content => "./hooks/post-receive-commitnumbers\n",
-      target  => "${hook}/post-receive",
+      target  => "echo \$oldrev \$newrev \$refname | ${hook}/post-receive",
       order   => '02',
       tag     => 'post-receive',
     }
@@ -91,7 +91,7 @@ class gitolite (
       tag    => 'r10k_env.sh',
     }
     @concat::fragment { 'r10k_env.sh':
-      content => "./hooks/r10k_env.sh\n",
+      content => "echo \$oldrev \$newrev \$refname | ./hooks/r10k_env.sh\n",
       target  => "${hook}/post-receive",
       order   => '03',
       tag     => 'post-receive',
