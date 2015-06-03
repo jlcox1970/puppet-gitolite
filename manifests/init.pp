@@ -163,7 +163,7 @@ class gitolite (
   }
   if ( $extra_hooks != undef) {
     gitolite::hooks { $extra_hooks :
-      hook= $hook,
+      hook=> $hook,
     }
   }
   Concat::Fragment <| tag == 'post-receive' |> 
