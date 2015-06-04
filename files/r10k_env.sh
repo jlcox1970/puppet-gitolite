@@ -33,8 +33,6 @@ done
 
 full_checkout=`git diff-tree --no-commit-id --name-only  -r ${branch} |grep Puppetfile -c`
 
-#echo REPOSITORY_BASENAME is $REPOSITORY_BASENAME changes made to branch $branch refname $refname
-
 if [ "${REPOSITORY_BASENAME}" == "gitolite-admin" ]
 then
 	exit
@@ -46,15 +44,11 @@ then
 	then
 		echo Puppetfile has been modified. Updating entire ${branch} environment
 		sudo /usr/local/bin/r10k deploy environment ${branch} -vp
-#		sudo /usr/bin/chmod 755 /etc/puppet/environments/${branch} -R
 	else
 		sudo /usr/local/bin/r10k deploy environment ${branch} -v
-#		sudo /usr/bin/chmod 755 /etc/puppet/environments/${branch} -R
 	fi
 else 
-	#MOD_NAME=`echo ${REPOSITORY_BASENAME} |sed 's/^biq-//g'`
 	MOD_NAME=`echo ${REPOSITORY_BASENAME}`
 	sudo /usr/local/bin/r10k deploy module ${MOD_NAME}
-#	sudo /usr/bin/chmod 755 /etc/puppet/environments/*/modules/${MOD_NAME} -R
 fi
 
