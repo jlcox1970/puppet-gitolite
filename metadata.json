@@ -31,6 +31,6 @@
   "source": "https://github.com/jlcox1970/puppet-gitolite.git",
   "summary": "Installer for gitolite on Centos and RHEL",
   "tags": ["git"],
-  "version": "1.0.2",
+  "version": "1.0.3",
   "issues_url": "https://github.com/jlcox1970/puppet-gitolite/issues"
 }
