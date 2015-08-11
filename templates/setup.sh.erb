@@ -1,6 +1,5 @@
 #!/bin/bash
 export HOME=<%= @git_home %>
-chmod +rx /home
 chmod +rx <%= @git_home %>
 
 gitolite setup -pk <%= @git_home %>/install.pub
