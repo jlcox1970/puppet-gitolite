@@ -120,18 +120,24 @@ class gitolite (
   }
 
   case $::operatingsystemmajrelease {
-    7 : {
+    "7" : {
+      $gitolite_pkg = "gitolite3"
     }
     default : {
-      package {'gitolite' : }
+      $gitolite_pkg = "gitolite"
     }
   }
-  package {'gitolite3' : } ->
+  package {$gitolite_pkg : } ->
   user { 'git' :
     ensure     => present,
     comment    => 'git user',
     managehome => true,
     home       => $git_home,
+  } ->
+  file {"${git_home}" :
+    ensure => directory,
+    owner  => 'git',
+    group  => 'git',
   } ->
   file {"${git_home}/install.pub" :
     content => "${git_key_type} ${git_key} ${admin_user}",
