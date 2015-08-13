@@ -169,7 +169,7 @@ class gitolite (
   file {'gitolite sudoer file':
     name    => '/etc/sudoers.d/gitolite',
     content => template("${module_name}/sudoers.erb"),
-    user    => 'root',
+    owner   => 'root',
     group   => 'root',
     mode    => '0440',
   } ->
