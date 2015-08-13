@@ -28,6 +28,9 @@ Parameters
      deploy module or deploy environment
    It will run both a Puppetfile is changed
 
+[r10k_exec]
+   Location of the r10k executable that the hook will call.
+   Used to populate the sudoers file correctly
 
 Examples
 --------

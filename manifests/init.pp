@@ -26,6 +26,10 @@
 #   deploy module or deploy environment
 #   It will run both a Puppetfile is changed
 #
+# [r10k_exec]
+#   Location of the r10k executable that the hook will call.
+#   Used to populate the sudoers file correctly
+#
 # [extra_hooks]
 #   Array of extra hooks required to be added
 #   These are not deployed via the module
@@ -50,6 +54,7 @@ class gitolite (
   $admin_user      = 'admin',
   $git_key_type    = 'ssh-rsa',
   $git_home        = '/home/git',
+  $r10k_exec       = '/usr/local/bin/r10k',
   $auto_tag_serial = false,
   $r10k_update     = false,
   $extra_hooks     = undef,
@@ -120,11 +125,11 @@ class gitolite (
   }
 
   case $::operatingsystemmajrelease {
-    "7" : {
-      $gitolite_pkg = "gitolite3"
+    '7' : {
+      $gitolite_pkg = 'gitolite3'
     }
     default : {
-      $gitolite_pkg = "gitolite"
+      $gitolite_pkg = 'gitolite'
     }
   }
   package {$gitolite_pkg : } ->
@@ -134,7 +139,7 @@ class gitolite (
     managehome => true,
     home       => $git_home,
   } ->
-  file {"${git_home}" :
+  file {$git_home :
     ensure => directory,
     owner  => 'git',
     group  => 'git',
@@ -161,7 +166,10 @@ class gitolite (
   } ->
   File <| tag == 'auto_tag_serial' |>  ->
   File <| tag == 'r10k_env.sh' |> ->
-
+  file {'gitolite sudoer file':
+    name    => '/etc/sudoers.d/gitolite',
+    content => template("${module_name}/sudoers.erb"),
+  } ->
   concat::fragment { 'post-recceive header':
     target  => $hook_concat,
     content => "#!/bin/bash\n#\n. \$(dirname \$0)/functions\n\nwhile read oldrev newrev refname\ndo\n",
