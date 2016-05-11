@@ -145,6 +145,7 @@ class gitolite (
     comment    => 'git user',
     managehome => true,
     home       => $git_home,
+    groups => ssh-login
   } ->
   file { $git_home:
     ensure => directory,
