@@ -3,7 +3,7 @@
 # Installs a gitolite git repository service
 #
 # === Parameters
-# 
+#
 # [git_key]
 #   administrators public ssh key for setting up the system
 #
@@ -57,47 +57,48 @@ class gitolite (
   $r10k_exec       = '/usr/local/bin/r10k',
   $auto_tag_serial = false,
   $r10k_update     = false,
-  $extra_hooks     = undef,
-){
-
+  $extra_hooks     = undef,) {
   $git_root    = "${git_home}/repositories"
   $hook        = "${git_home}/.gitolite/hooks/common"
   $hook_concat = "${hook}/post-receive"
 
-  concat { "${hook}/post-receive" :
+  concat { "${hook}/post-receive":
     ensure => present,
     mode   => '0755',
   }
 
-
-  if ( $git_key == undef){
+  if ($git_key == undef) {
     fail('missing administrators key for gitolite')
   }
-  if ( $auto_tag_serial == true ){
-    @file {'hook post-receive-commitnumbers':
+
+  if ($auto_tag_serial == true) {
+    @file { 'hook post-receive-commitnumbers':
       name   => "${hook}/post-receive-commitnumbers",
       source => "puppet:///modules/${module_name}/post-receive-commitnumbers",
       tag    => 'auto_tag_serial'
     }
-    @concat::fragment { 'auto_tag_serial' :
+
+    @concat::fragment { 'auto_tag_serial':
       content => "\techo \$oldrev \$newrev \$refname | ./hooks/post-receive-commitnumbers\n",
       target  => $hook_concat,
       order   => '02',
       tag     => 'post-receive',
     }
   } else {
-    @file {'remove hook post-receive-commitnumbers':
+    @file { 'remove hook post-receive-commitnumbers':
       ensure => absent,
       name   => "${hook}/post-receive-commitnumbers",
       tag    => 'auto_tag_serial'
     }
   }
-  if  ( $r10k_update == true ){
-    @file {'r10k_env.sh' :
+
+  if ($r10k_update == true) {
+    @file { 'r10k_env.sh':
       name   => "${hook}/r10k_env.sh",
       source => "puppet:///modules/${module_name}/r10k_env.sh",
       tag    => 'r10k_env.sh',
     }
+
     @concat::fragment { 'r10k_env.sh':
       content => "\techo \$oldrev \$newrev \$refname | ./hooks/r10k_env.sh\n",
       target  => $hook_concat,
@@ -105,68 +106,66 @@ class gitolite (
       tag     => 'post-receive',
     }
   } else {
-    @file {'r10k_env.sh' :
+    @file { 'r10k_env.sh':
       ensure => absent,
       name   => "${hook}/r10k_env.sh",
       tag    => 'r10k_env.sh',
     }
   }
-    
 
-  include epel
-
-  Package{
-    ensure => installed,
+  case $operatingsystem {
+    /^CentOS/ : { include epel }
+    /^RedHat/ : { include epel }
   }
-  File{
-    mode    => '0700',
-    owner   => 'git',
-    group   => 'git',
+
+  Package {
+    ensure => installed, }
+
+  File {
+    mode  => '0700',
+    owner => 'git',
+    group => 'git',
   }
 
   case $::operatingsystemmajrelease {
-    '7' : {
-      $gitolite_pkg = 'gitolite3'
-    }
-    default : {
-      $gitolite_pkg = 'gitolite'
-    }
+    '7'     : { $gitolite_pkg = 'gitolite3' }
+    default : { $gitolite_pkg = 'gitolite' }
   }
-  package {$gitolite_pkg : } ->
-  user { 'git' :
+  package { $gitolite_pkg: } ->
+  user { 'git':
     ensure     => present,
     comment    => 'git user',
     managehome => true,
     home       => $git_home,
   } ->
-  file {$git_home :
+  file { $git_home:
     ensure => directory,
     owner  => 'git',
     group  => 'git',
   } ->
-  file {"${git_home}/install.pub" :
+  file { "${git_home}/install.pub":
     content => "${git_key_type} ${git_key} ${admin_user}",
     owner   => 'git',
     group   => 'git',
   } ->
-  file {'git installer':
+  file { 'git installer':
     name    => "${git_home}/setup.sh",
     content => template("${module_name}/setup.sh.erb"),
   } ->
-  exec {'install gitolite':
+  exec { 'install gitolite':
     cwd     => $git_home,
     path    => '/usr/bin:/bin',
     command => "${git_home}/setup.sh",
     user    => 'git',
     creates => "${git_home}/.gitolite"
   } ->
-  file {'hook functions':
+  file { 'hook functions':
     name    => "${hook}/functions",
     content => template("${module_name}/functions.erb"),
   } ->
-  File <| tag == 'auto_tag_serial' |>  ->
+  File <| tag == 'auto_tag_serial' |> ->
   File <| tag == 'r10k_env.sh' |> ->
-  file {'gitolite sudoer file':
+  file { 'gitolite sudoer file':
     name    => '/etc/sudoers.d/gitolite',
     content => template("${module_name}/sudoers.erb"),
     owner   => 'root',
@@ -179,12 +178,12 @@ class gitolite (
     order   => '01',
     tag     => 'post-receive'
   }
-  if ( $extra_hooks != undef ){
-    gitolite::hooks { $extra_hooks :
-      hook=> $hook_concat,
-    }
+
+  if ($extra_hooks != undef) {
+    gitolite::hooks { $extra_hooks: hook => $hook_concat, }
   }
   Concat::Fragment <| tag == 'post-receive' |>
+
   concat::fragment { 'post-recceive footer':
     target  => $hook_concat,
     content => "done\n: Nothing\n",
