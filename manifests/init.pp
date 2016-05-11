@@ -129,7 +129,7 @@ class gitolite (
   }
 
   case $operatingsystem {
-    /^ubuntu/ : {
+    /^Ubuntu/ : {
       $gitolite_pkg = 'gitolite3'
     }
     default   : {
