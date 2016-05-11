@@ -116,6 +116,7 @@ class gitolite (
   case $operatingsystem {
     /^CentOS/ : { include epel }
     /^RedHat/ : { include epel }
+    default   : { }
   }
 
   Package {
@@ -127,9 +128,16 @@ class gitolite (
     group => 'git',
   }
 
-  case $::operatingsystemmajrelease {
-    '7'     : { $gitolite_pkg = 'gitolite3' }
-    default : { $gitolite_pkg = 'gitolite' }
+  case $operatingsystem {
+    /^ubuntu/ : {
+      $gitolite_pkg = 'gitolite3'
+    }
+    default   : {
+      case $::operatingsystemmajrelease {
+        '7'     : { $gitolite_pkg = 'gitolite3' }
+        default : { $gitolite_pkg = 'gitolite' }
+      }
+    }
   }
   package { $gitolite_pkg: } ->
   user { 'git':
