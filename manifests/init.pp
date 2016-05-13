@@ -145,7 +145,6 @@ class gitolite (
     comment    => 'git user',
     managehome => true,
     home       => $git_home,
-    groups => ssh-login
   } ->
   file { $git_home:
     ensure => directory,
@@ -180,24 +179,26 @@ class gitolite (
     owner   => 'root',
     group   => 'root',
     mode    => '0440',
-  } ->
-  concat::fragment { 'post-recceive header':
-    target  => $hook_concat,
-    content => "#!/bin/bash\n#\n. \$(dirname \$0)/functions\n\nwhile read oldrev newrev refname\ndo\n",
-    order   => '01',
-    tag     => 'post-receive'
   }
 
   if ($extra_hooks != undef) {
     gitolite::hooks { $extra_hooks: hook => $hook_concat, }
-  }
-  Concat::Fragment <| tag == 'post-receive' |>
 
-  concat::fragment { 'post-recceive footer':
-    target  => $hook_concat,
-    content => "done\n: Nothing\n",
-    order   => '999',
-    tag     => 'post-receive'
+    concat::fragment { 'post-recceive header':
+      target  => $hook_concat,
+      content => "#!/bin/bash\n#\n. \$(dirname \$0)/functions\n\nwhile read oldrev newrev refname\ndo\n",
+      order   => '01',
+      tag     => 'post-receive'
+    }
+    Concat::Fragment <| tag == 'post-receive' |>
+
+    concat::fragment { 'post-recceive footer':
+      target  => $hook_concat,
+      content => "done\n: Nothing\n",
+      order   => '999',
+      tag     => 'post-receive'
+    }
+
   }
 
 }
