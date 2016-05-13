@@ -118,7 +118,7 @@ class gitolite (
     ensure => installed, }
 
   File {
-    mode  => '0755',
+    mode  => '075',
     owner => 'git',
     group => 'git',
   }
@@ -145,6 +145,7 @@ class gitolite (
     ensure => directory,
     owner  => 'git',
     group  => 'git',
+    mode   => '0750'
   } ->
   file { "${git_home}/install.pub":
     content => "${git_key_type} ${git_key} ${admin_user}",
