@@ -62,11 +62,6 @@ class gitolite (
   $hook        = "${git_home}/.gitolite/hooks/common"
   $hook_concat = "${hook}/post-receive"
 
-  concat { "${hook}/post-receive":
-    ensure => present,
-    mode   => '0755',
-  }
-
   if ($git_key == undef) {
     fail('missing administrators key for gitolite')
   }
@@ -182,6 +177,11 @@ class gitolite (
   }
 
   if ($extra_hooks != undef) {
+    concat { "${hook}/post-receive":
+      ensure => present,
+      mode   => '0755',
+    }
+
     gitolite::hooks { $extra_hooks: hook => $hook_concat, }
 
     concat::fragment { 'post-recceive header':
