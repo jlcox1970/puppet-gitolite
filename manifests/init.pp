@@ -108,7 +108,7 @@ class gitolite (
     }
   }
 
-  case $operatingsystem {
+  case $::operatingsystem {
     /^CentOS/ : { include epel }
     /^RedHat/ : { include epel }
     default   : { }
@@ -123,7 +123,7 @@ class gitolite (
     group => 'git',
   }
 
-  case $operatingsystem {
+  case $::operatingsystem {
     /^Ubuntu/ : {
       $gitolite_pkg = 'gitolite3'
     }
