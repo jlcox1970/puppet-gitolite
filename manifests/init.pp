@@ -92,6 +92,7 @@ class gitolite (
       name    => "${hook}/r10k_env.sh",
       content => template("${module_name}/r10k_env.sh.erb"),
       tag     => 'r10k_env.sh',
+      mode    => '0700'
     }
 
     @concat::fragment { 'r10k_env.sh':
