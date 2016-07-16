@@ -90,7 +90,7 @@ class gitolite (
   if ($r10k_update == true) {
     @file { 'r10k_env.sh':
       name    => "${hook}/r10k_env.sh",
-      content => tempalate("${module_name}/r10k_env.sh.erb",
+      content => tempalate("${module_name}/r10k_env.sh.erb"),
       tag     => 'r10k_env.sh',
     }
 
