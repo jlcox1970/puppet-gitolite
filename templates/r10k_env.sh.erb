@@ -38,7 +38,7 @@ then
 	exit
 fi
 
-if [ "${REPOSITORY_BASENAME}" == "puppet-control" ]
+if [ "${REPOSITORY_BASENAME}" == "puppet-control" ] ||  [ "${REPOSITORY_BASENAME}" == "puppetr_control" ]
 then
 	if [ ${full_checkout} -eq 1 ]
 	then
