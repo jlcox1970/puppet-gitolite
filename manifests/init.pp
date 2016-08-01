@@ -119,7 +119,7 @@ class gitolite (
     ensure => installed, }
 
   File {
-    mode  => '075',
+    mode  => '0755',
     owner => 'git',
     group => 'git',
   }
