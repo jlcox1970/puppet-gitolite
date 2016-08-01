@@ -92,7 +92,7 @@ class gitolite (
       name    => "${hook}/r10k_env.sh",
       content => template("${module_name}/r10k_env.sh.erb"),
       tag     => 'r10k_env.sh',
-      mode    => '0700'
+      mode    => '0755'
     }
 
     @concat::fragment { 'r10k_env.sh':
@@ -167,7 +167,7 @@ class gitolite (
   file { 'hook functions':
     name    => "${hook}/functions",
     content => template("${module_name}/functions.erb"),
-    mode    => '0700'
+    mode    => '0755'
   } ->
   File <| tag == 'auto_tag_serial' |> ->
   File <| tag == 'r10k_env.sh' |> ->
