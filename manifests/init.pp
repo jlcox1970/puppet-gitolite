@@ -124,17 +124,18 @@ class gitolite (
     group => 'git',
   }
 
-  case $::operatingsystem {
-    /^Ubuntu/ : {
+  case $::osfamily {
+    default : {
       $gitolite_pkg = 'gitolite3'
     }
-    default   : {
+    /^RedHat/ : {
       case $::operatingsystemmajrelease {
         '7'     : { $gitolite_pkg = 'gitolite3' }
         default : { $gitolite_pkg = 'gitolite' }
       }
     }
   }
+  notify {"installing $gitolite_pkg on $osfamily and $::operatingsystemmajrelease":}
   package { $gitolite_pkg: } ->
   user { 'git':
     ensure     => present,
