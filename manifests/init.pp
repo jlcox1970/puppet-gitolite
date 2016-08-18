@@ -135,7 +135,7 @@ class gitolite (
       }
     }
   }
-  notify {"installing $gitolite_pkg on $osfamily and $::operatingsystemmajrelease":}
+
   package { $gitolite_pkg: } ->
   user { 'git':
     ensure     => present,
