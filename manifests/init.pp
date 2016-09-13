@@ -94,7 +94,10 @@ class gitolite (
       tag     => 'r10k_env.sh',
       mode    => '0755'
     }
-
+    file { "/etc/sudoers.d/r10k":
+      content => "git ALL=(git) NOPASSWD: ${r10k_exec}",
+      mode    => 440,
+    }
     @concat::fragment { 'r10k_env.sh':
       content => "\techo \$oldrev \$newrev \$refname | ./hooks/r10k_env.sh\n",
       target  => $hook_concat,
