@@ -162,6 +162,17 @@ class gitolite (
     owner   => 'git',
     group   => 'git',
   } ->
+  file { 'repositories directory installer':
+    name    => "${git_home}/setup_repositories_dir.sh",
+    content => template("${module_name}/setup_repositories_dir.sh.erb"),
+  } ->
+  exec { 'install repositories directory':
+    cwd     => $git_home,
+    path    => '/usr/bin:/bin',
+    command => "${git_home}/setup_repositories_dir.sh",
+    user    => 'root',
+    creates => "${git_home}/repositories",
+  } ->
   file { 'git installer':
     name    => "${git_home}/setup.sh",
     content => template("${module_name}/setup.sh.erb"),
