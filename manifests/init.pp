@@ -15,7 +15,11 @@
 #
 # [git_home]
 #   root directory for the repository.
-#     Defaults to the git users home direcotry (/home/git)
+#     Defaults to the git users home directory (/home/git)
+#
+# [git_root]
+#   root directory for the repository storage
+#     Defaults to  $git_home/repositories
 #
 # [auto_tag_serial]
 #   Adds an auto incrimental serial tag to each commit
@@ -51,14 +55,15 @@
 #
 class gitolite (
   $git_key         = undef,
-  $admin_user      = 'admin',
-  $git_key_type    = 'ssh-rsa',
-  $git_home        = '/home/git',
-  $r10k_exec       = '/usr/local/bin/r10k',
-  $auto_tag_serial = false,
-  $r10k_update     = false,
-  $extra_hooks     = undef,) {
-  $git_root    = "${git_home}/repositories"
+  $extra_hooks     = undef,
+  $admin_user      = $gitolite::params::admin_user,
+  $auto_tag_serial = $gitolite::params::auto_tag_serial,
+  $git_key_type    = $gitolite::params::git_key_type,
+  $git_home        = $gitolite::params::git_home,
+  $git_root        = $gitolite::params::git_root,
+  $r10k_exec       = $gitolite::params::r10k_exec,
+  $r10k_update     = $gitolite::params::r10k_update,
+) inherits gitolite::params {
   $hook        = "${git_home}/.gitolite/hooks/common"
   $hook_concat = "${hook}/post-receive"
 
@@ -156,6 +161,17 @@ class gitolite (
     content => "${git_key_type} ${git_key} ${admin_user}",
     owner   => 'git',
     group   => 'git',
+  } ->
+  file { 'repositories directory installer':
+    name    => "${git_home}/setup_repositories_dir.sh",
+    content => template("${module_name}/setup_repositories_dir.sh.erb"),
+  } ->
+  exec { 'install repositories directory':
+    cwd     => $git_home,
+    path    => '/usr/bin:/bin',
+    command => "${git_home}/setup_repositories_dir.sh",
+    user    => 'root',
+    creates => "${git_home}/repositories",
   } ->
   file { 'git installer':
     name    => "${git_home}/setup.sh",

@@ -4,6 +4,6 @@ chmod +rx <%= @git_home %>
 
 gitolite setup -pk <%= @git_home %>/install.pub
 
-chmod +rx <%= @git_home %>/repositories -R
+chmod +rx <%= @git_home %>/repositories/* -R
 chmod 700 <%= @git_home %>/repositories/gitolite-admin.git -R
 

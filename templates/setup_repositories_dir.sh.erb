@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ "<%= @git_root %>" != "<%= @git_home %>/repositories" ]
+then
+    # Create the repository hosting path
+    mkdir -p <%= @git_root %>
+    chown git:git <%= @git_root %>
+
+    # Make sure that there is a symlink to the new path so gitolite will use the
+    # path for the repositories
+    ln -s <%= @git_root %> <%= @git_home %>/repositories
+else
+    mkdir <%= @git_home %>/repositories
+    chown git:git <%= @git_home %>/repositories
+    chmod +rx <%= @git_home %>/repositories
+fi
