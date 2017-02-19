@@ -61,9 +61,7 @@ class gitolite (
   $git_key_type    = $gitolite::params::git_key_type,
   $git_home        = $gitolite::params::git_home,
   $git_root        = $gitolite::params::git_root,
-  $r10k_exec       = $gitolite::params::r10k_exec,
-  $r10k_update     = $gitolite::params::r10k_update,
-) inherits gitolite::params {
+  $r10k_update     = $gitolite::params::r10k_update,) inherits gitolite::params {
   $hook        = "${git_home}/.gitolite/hooks/common"
   $hook_concat = "${hook}/post-receive"
 
@@ -99,10 +97,15 @@ class gitolite (
       tag     => 'r10k_env.sh',
       mode    => '0755'
     }
+
     file { '/etc/sudoers.d/r10k':
-      content => "git ALL=(git) NOPASSWD: ${r10k_exec}",
+      content => "git ALL=(git) NOPASSWD: $::r10k_path
+Defaults:git !requiretty",
       mode    => '0440',
+      owner   => root,
+      group   => root
     }
+
     @concat::fragment { 'r10k_env.sh':
       content => "\techo \$oldrev \$newrev \$refname | ./hooks/r10k_env.sh\n",
       target  => $hook_concat,
@@ -133,7 +136,7 @@ class gitolite (
   }
 
   case $::osfamily {
-    default : {
+    default   : {
       $gitolite_pkg = 'gitolite3'
     }
     /^RedHat/ : {

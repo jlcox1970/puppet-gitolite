@@ -43,12 +43,12 @@ then
 	if [ ${full_checkout} -eq 1 ]
 	then
 		echo Puppetfile has been modified. Updating entire ${branch} environment
-		sudo <%= @r10k_exec %> deploy environment ${branch} -vp
+		sudo <%= @r10k_path %> deploy environment ${branch} -vp
 	else
-		sudo <%= @r10k_exec %> deploy environment ${branch} -v
+		sudo <%= @r10k_path %> deploy environment ${branch} -v
 	fi
 else 
 	MOD_NAME=`echo ${REPOSITORY_BASENAME}`
-	sudo <%= @r10k_exec %> deploy module ${MOD_NAME}
+	sudo <%= @r10k_path %> deploy module ${MOD_NAME}
 fi
 

@@ -10,6 +10,5 @@ class gitolite::params {
   $git_key_type    = 'ssh-rsa'
   $git_home        = '/home/git'
   $git_root        = "${git_home}/repositories"
-  $r10k_exec       = '/usr/local/bin/r10k'
   $r10k_update     = false
 }
