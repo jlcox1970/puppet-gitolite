@@ -99,8 +99,7 @@ class gitolite (
     }
 
     file { '/etc/sudoers.d/r10k':
-      content => "git ALL=(git) NOPASSWD: $::r10k_path
-Defaults:git !requiretty",
+      content => "git ALL=(git) NOPASSWD:$::r10k_path",
       mode    => '0440',
       owner   => root,
       group   => root
@@ -194,14 +193,7 @@ Defaults:git !requiretty",
   } ->
   File <| tag == 'auto_tag_serial' |> ->
   File <| tag == 'r10k_env.sh' |> ->
-  file { 'gitolite sudoer file':
-    name    => '/etc/sudoers.d/gitolite',
-    content => template("${module_name}/sudoers.erb"),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0440',
-  }
-
+  
   if ($extra_hooks != undef) {
     concat { "${hook}/post-receive":
       ensure => present,
