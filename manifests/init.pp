@@ -99,7 +99,7 @@ class gitolite (
     }
 
     file { '/etc/sudoers.d/r10k':
-      content => "git ALL=(root) NOPASSWD:${r10k_path}",
+      content => "git ALL=(root) NOPASSWD:${r10k_path}\n",
       mode    => '0440',
       owner   => root,
       group   => root
