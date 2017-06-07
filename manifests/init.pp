@@ -193,9 +193,15 @@ class gitolite (
     name    => "${hook}/functions",
     content => template("${module_name}/functions.erb"),
     mode    => '0755'
-  } ->
-  File <| tag == 'auto_tag_serial' |> ->
-  File <| tag == 'r10k_env.sh' |> ->
+  }
+
+  File <| tag == 'auto_tag_serial' |> {
+    requires => File['hook functions']
+  }
+
+  File <| tag == 'r10k_env.sh' |> {
+    requires => File['hook functions']
+  }
   
   if ($extra_hooks != undef) {
     concat { "${hook}/post-receive":
