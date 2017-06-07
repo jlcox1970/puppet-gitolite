@@ -196,11 +196,11 @@ class gitolite (
   }
 
   File <| tag == 'auto_tag_serial' |> {
-    requires => File['hook functions']
+    require => File['hook functions']
   }
 
   File <| tag == 'r10k_env.sh' |> {
-    requires => File['hook functions']
+    require => File['hook functions']
   }
   
   if ($extra_hooks != undef) {
