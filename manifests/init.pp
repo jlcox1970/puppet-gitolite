@@ -30,7 +30,7 @@
 #   deploy module or deploy environment
 #   It will run both a Puppetfile is changed
 #
-# [r10k_exec]
+# [r10k_path]
 #   Location of the r10k executable that the hook will call.
 #   Used to populate the sudoers file correctly
 #
@@ -61,7 +61,10 @@ class gitolite (
   $git_key_type    = $gitolite::params::git_key_type,
   $git_home        = $gitolite::params::git_home,
   $git_root        = $gitolite::params::git_root,
-  $r10k_update     = $gitolite::params::r10k_update,) inherits gitolite::params {
+  $r10k_update     = $gitolite::params::r10k_update,
+  $r10k_path       = $gitolite::params::r10k_path,
+) inherits gitolite::params {
+
   $hook        = "${git_home}/.gitolite/hooks/common"
   $hook_concat = "${hook}/post-receive"
 

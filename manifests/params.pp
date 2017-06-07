@@ -11,4 +11,5 @@ class gitolite::params {
   $git_home        = '/home/git'
   $git_root        = "${git_home}/repositories"
   $r10k_update     = false
+  $r10k_path       = '/bin/r10k'
 }
