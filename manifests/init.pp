@@ -30,7 +30,7 @@
 #   deploy module or deploy environment
 #   It will run both a Puppetfile is changed
 #
-# [r10k_exec]
+# [r10k_location]
 #   Location of the r10k executable that the hook will call.
 #   Used to populate the sudoers file correctly
 #
@@ -61,7 +61,10 @@ class gitolite (
   $git_key_type    = $gitolite::params::git_key_type,
   $git_home        = $gitolite::params::git_home,
   $git_root        = $gitolite::params::git_root,
-  $r10k_update     = $gitolite::params::r10k_update,) inherits gitolite::params {
+  $r10k_update     = $gitolite::params::r10k_update,
+  $r10k_location   = $gitolite::params::r10k_location,
+) inherits gitolite::params {
+
   $hook        = "${git_home}/.gitolite/hooks/common"
   $hook_concat = "${hook}/post-receive"
 
@@ -99,7 +102,7 @@ class gitolite (
     }
 
     file { '/etc/sudoers.d/r10k':
-      content => "git ALL=(root) NOPASSWD:${r10k_path}\n",
+      content => "git ALL=(root) NOPASSWD:${r10k_location}\n",
       mode    => '0440',
       owner   => root,
       group   => root
@@ -190,9 +193,15 @@ class gitolite (
     name    => "${hook}/functions",
     content => template("${module_name}/functions.erb"),
     mode    => '0755'
-  } ->
-  File <| tag == 'auto_tag_serial' |> ->
-  File <| tag == 'r10k_env.sh' |> ->
+  }
+
+  File <| tag == 'auto_tag_serial' |> {
+    require => File['hook functions']
+  }
+
+  File <| tag == 'r10k_env.sh' |> {
+    require => File['hook functions']
+  }
   
   if ($extra_hooks != undef) {
     concat { "${hook}/post-receive":
