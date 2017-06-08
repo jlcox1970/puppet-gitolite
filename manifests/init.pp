@@ -30,7 +30,7 @@
 #   deploy module or deploy environment
 #   It will run both a Puppetfile is changed
 #
-# [r10k_path]
+# [r10k_location]
 #   Location of the r10k executable that the hook will call.
 #   Used to populate the sudoers file correctly
 #
@@ -62,7 +62,7 @@ class gitolite (
   $git_home        = $gitolite::params::git_home,
   $git_root        = $gitolite::params::git_root,
   $r10k_update     = $gitolite::params::r10k_update,
-  $r10k_path       = $gitolite::params::r10k_path,
+  $r10k_location   = $gitolite::params::r10k_location,
 ) inherits gitolite::params {
 
   $hook        = "${git_home}/.gitolite/hooks/common"
@@ -102,7 +102,7 @@ class gitolite (
     }
 
     file { '/etc/sudoers.d/r10k':
-      content => "git ALL=(root) NOPASSWD:${r10k_path}\n",
+      content => "git ALL=(root) NOPASSWD:${r10k_location}\n",
       mode    => '0440',
       owner   => root,
       group   => root

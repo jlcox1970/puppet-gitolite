@@ -11,5 +11,10 @@ class gitolite::params {
   $git_home        = '/home/git'
   $git_root        = "${git_home}/repositories"
   $r10k_update     = false
-  $r10k_path       = '/bin/r10k'
+
+  if $facts['$r10k_path'] != undef {
+    $r10k_location = $facts['$r10k_path']
+  } else {
+    $r10k_location = '/bin/r10k'
+  }
 }
